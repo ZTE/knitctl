@@ -1,0 +1,24 @@
+kind: tenant
+apiVersion: v1
+metadata:
+  name: ex-tenant
+spec:
+---
+kind: network
+apiVersion: v1
+metadata:
+  name: ex-nw
+  tenant: ex-tenant
+spec:
+  gateway: 10.144.209.1
+  cidr: 10.144.209.0/24
+  public: false
+---
+kind: ipgroup
+apiVersion: v1
+metadata:
+  name: ex-ipg
+  tenant: ex-tenant
+  network: ex-nw
+spec:
+  ips: 10.144.209.11

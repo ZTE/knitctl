@@ -1,0 +1,24 @@
+kind: tenant
+apiVersion: v1
+metadata:
+  name: delete_yaml_tenant_test
+spec:
+---
+kind: network
+apiVersion: v1
+metadata:
+  name: delete_yaml_network_test
+  tenant: delete_yaml_tenant_test
+spec:
+  gateway: 10.144.209.1
+  cidr: 10.144.209.0/24
+  public: false
+---
+kind: ipgroup
+apiVersion: v1
+metadata:
+  name: delete_yaml_ipgroup_test
+  tenant: delete_yaml_tenant_test
+  network: delete_yaml_network_test
+spec:
+  ips: 10.144.209.11

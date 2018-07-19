@@ -1,0 +1,24 @@
+kind: tenant
+apiVersion: v1
+metadata:
+  name: create_yaml_tenant_test1
+spec:
+---
+kind: network
+apiVersion: v1
+metadata:
+  name: create_yaml_network_test1
+  tenant: create_yaml_tenant_test1
+spec:
+  gateway: 10.144.209.1
+  cidr: 10.144.209.0/24
+  public: false
+---
+kind: ipgroup
+apiVersion: v1
+metadata:
+  name: create_yaml_ipgroup_test1
+  tenant: create_yaml_tenant_test1
+  network: create_yaml_network_test1
+spec:
+  ips: 10.144.209.11
