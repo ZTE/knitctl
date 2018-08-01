@@ -1,10 +1,11 @@
 package api
 
+
 const (
 	versionUri = "nw/version"
 )
 
-func GetKnitterVersion() (string, error) {
+func GetKnitterVersion() (string, error){
 	//hostport, err := GetHostPortFromPerporty()
 	//if (err != nil) {
 	//	return err

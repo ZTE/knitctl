@@ -2,32 +2,31 @@ package api
 
 import (
 	"fmt"
-	"io"
 	"strings"
+	"io"
 )
-
 //create resource based on yaml file
 func CreateResource(yamlFile string, errOut io.Writer, out io.Writer) error {
 	arrMapYaml, err := GetFromYaml(yamlFile)
-	if err != nil {
+	if(err != nil){
 		return err
 	}
 
-	if len(arrMapYaml) > 0 {
+	if len(arrMapYaml) > 0{
 		//first excute creating tenant
 		errs := []error{}
-		for _, mapYaml := range arrMapYaml {
+		for _, mapYaml := range arrMapYaml{
 			kind, found := mapYaml["kind"]
-			if found && kind == "tenant" {
+			if found && kind == "tenant"{
 				err := CreateTN(mapYaml, out)
-				if err != nil {
+				if err != nil{
 					//only print ,do not return
 					errs = append(errs, err)
 				}
 			}
 		}
 
-		for _, mapYaml := range arrMapYaml {
+		for _, mapYaml := range arrMapYaml{
 			kind, found := mapYaml["kind"]
 			if found && kind == "network" {
 				//it means that this is a network resource
@@ -39,17 +38,17 @@ func CreateResource(yamlFile string, errOut io.Writer, out io.Writer) error {
 			}
 		}
 
-		for _, mapyamlNw := range arrMapYaml {
+		for _, mapyamlNw := range arrMapYaml{
 			kind, found := mapyamlNw["kind"]
 			if !found {
-				err := fmt.Errorf("no found resource kind in file %s.\n", yamlFile)
+				err :=fmt.Errorf("no found resource kind in file %s.\n", yamlFile)
 				errs = append(errs, err)
-			} else if kind == "ipgroup" {
+			}else if kind == "ipgroup" {
 				err := CreateIPG(mapyamlNw, out)
 				if err != nil {
 					errs = append(errs, err)
 				}
-			} else if kind != "tenant" && kind != "network" {
+			}else if kind != "tenant" && kind != "network"{
 				err := fmt.Errorf("unknow resource kind %s in %s. supported kind: 'network' or 'tenant'.\n", mapyamlNw["kind"], yamlFile)
 				errs = append(errs, err)
 			}
@@ -63,11 +62,11 @@ func CreateResource(yamlFile string, errOut io.Writer, out io.Writer) error {
 //delete resource based on yaml file
 func DeleteResource(yamlFile string, errOut io.Writer, out io.Writer) error {
 	arrMapYaml, err := GetFromYaml(yamlFile)
-	if err != nil {
+	if(err != nil){
 		return err
 	}
 
-	if len(arrMapYaml) > 0 {
+	if len(arrMapYaml) > 0{
 		errs := []error{}
 		//first excute deleting network
 		for _, mapYaml := range arrMapYaml {
@@ -82,31 +81,31 @@ func DeleteResource(yamlFile string, errOut io.Writer, out io.Writer) error {
 			}
 		}
 
-		for _, mapYaml := range arrMapYaml {
+		for _, mapYaml := range arrMapYaml{
 			kind, found := mapYaml["kind"]
-			if found && kind == "network" {
+			if found && kind == "network"{
 				//it means that this is a network resource
 				erro := DeleteNetwork(mapYaml, out)
-				if erro != nil {
+				if erro != nil{
 					//only print ,do not return
 					errs = append(errs, erro)
 				}
 			}
 		}
 
-		for _, mapYaml := range arrMapYaml {
+		for _, mapYaml := range arrMapYaml{
 			kind, found := mapYaml["kind"]
-			if !found {
+			if !found{
 				errs = append(errs, fmt.Errorf("no found resource kind in file %s.\n", yamlFile))
 
-			} else if kind == "tenant" {
+			}else if kind == "tenant"{
 				//it means that this is a tenant resource
 				err0 := DeleteTN(mapYaml, out)
-				if err0 != nil {
+				if err0 != nil{
 					//only print ,do not return
 					errs = append(errs, err0)
 				}
-			} else if kind != "network" && kind != "ipgroup" {
+			}else if kind != "network" && kind != "ipgroup" {
 				err := fmt.Errorf("unknow resource kind %s in file %s. supported type: 'network', 'tenant', and 'ipgroup'.\n", mapYaml["kind"], yamlFile)
 				errs = append(errs, err)
 			}
@@ -119,44 +118,44 @@ func DeleteResource(yamlFile string, errOut io.Writer, out io.Writer) error {
 
 //////////////////////////////// network function
 func CreateNW(mapYaml map[string]interface{}, out io.Writer) error {
-	if kind, found := mapYaml["kind"]; found && kind == "network" {
+	if kind, found := mapYaml["kind"]; found && kind == "network"{
 		metadata, fMetadata := mapYaml["metadata"]
 		spec, fSpec := mapYaml["spec"]
 
 		necessaryField := ""
-		if !fSpec {
+		if !fSpec || spec == nil{
 			necessaryField += "spec: {gateway}, spec: {cidr}, "
 		}
-		if !fMetadata {
+		if !fMetadata || metadata == nil{
 			necessaryField += "metadata: {name}, metadata: {tenant}, "
 		}
-		if fMetadata {
-			_, fName := metadata.(map[string]interface{})["name"]
-			_, fTenant := (metadata.(map[string]interface{}))["tenant"]
-			if !fName {
+		if fMetadata && metadata != nil {
+			name, fName := metadata.(map[string]interface{})["name"]
+			tenant, fTenant := (metadata.(map[string]interface{}))["tenant"]
+			if !fName || name == nil{
 				necessaryField += "metadata: {name}, "
 			}
-			if !fTenant {
+			if !fTenant || tenant ==nil {
 				necessaryField += "metadata: {tenant}, "
 			}
 		}
-		if fSpec {
-			_, fGateway := (spec.(map[string]interface{}))["gateway"]
-			_, fCidr := (spec.(map[string]interface{}))["cidr"]
-			if !fGateway {
+		if fSpec && spec != nil {
+			gateway, fGateway := (spec.(map[string]interface{}))["gateway"]
+			cidr, fCidr := (spec.(map[string]interface{}))["cidr"]
+			if !fGateway || gateway == nil{
 				necessaryField += "spec: {gateway}, "
 			}
-			if !fCidr {
+			if !fCidr || cidr == nil {
 				necessaryField += "spec: {cidr}, "
 			}
 		}
-		if necessaryField != "" {
+		if necessaryField != ""{
 			necessaryField = strings.TrimRight(necessaryField, ", ")
-			return fmt.Errorf("no found necessary field '%s'.\n", necessaryField)
+			return  fmt.Errorf("no found necessary field '%s'.\n", necessaryField)
 		}
 
 		strNetwork := NewStruNetwork(mapYaml)
-		strRe, err := strNetwork.Post()
+		strRe, err :=  strNetwork.Post()
 		ExcInfo(strRe, out)
 		return err
 	}
@@ -164,7 +163,7 @@ func CreateNW(mapYaml map[string]interface{}, out io.Writer) error {
 	return fmt.Errorf("no found resource kind network")
 }
 
-func GetNetwork(tenant string, nameOrId string, outputKind string, out io.Writer) error {
+func GetNetwork(tenant string, nameOrId string, outputKind string, out io.Writer) (error) {
 	mapMetaData := make(map[string]interface{})
 	mapMetaData["tenant"] = tenant
 	mapMetaData["name"] = nameOrId
@@ -182,7 +181,7 @@ func GetNetwork(tenant string, nameOrId string, outputKind string, out io.Writer
 }
 
 // a interface
-func getNetworkIdByTenantAndName(tenant string, nameOrId string) string {
+func getNetworkIdByTenantAndName(tenant string, nameOrId string) (string) {
 	mapMetaData := make(map[string]interface{})
 	mapMetaData["tenant"] = tenant
 	mapMetaData["name"] = nameOrId
@@ -193,7 +192,7 @@ func getNetworkIdByTenantAndName(tenant string, nameOrId string) string {
 	mapYaml["apiversion"] = "v1"
 
 	strNW := NewStruNetwork(mapYaml)
-	arrRe, _, _ := strNW.Get("")
+	arrRe, _, _ := strNW.Get("");
 	if arrRe == nil || len(arrRe) == 0 {
 		return ""
 	}
@@ -233,25 +232,25 @@ func DeleteNetworkFromFiled(tenant string, nameOrId string, out io.Writer) error
 
 func DeleteNetwork(mapYaml map[string]interface{}, out io.Writer) error {
 
-	if kind, found := mapYaml["kind"]; found && kind == "network" {
+	if kind, found := mapYaml["kind"]; found && kind == "network"{
 
 		metadata, fMetadata := mapYaml["metadata"]
 
 		necessaryField := ""
-		if !fMetadata {
+		if !fMetadata || metadata == nil{
 			necessaryField += "metadata: {tenant}, metadata: {name}, "
-		} else {
-			_, fName := metadata.(map[string]interface{})["name"]
-			_, fTenant := metadata.(map[string]interface{})["tenant"]
-			if !fName {
+		}else {
+			name, fName := metadata.(map[string]interface{})["name"]
+			tenant, fTenant := metadata.(map[string]interface{})["tenant"]
+			if !fName || name == nil{
 				necessaryField += "metadata: {name}, "
 			}
-			if !fTenant {
+			if !fTenant || tenant == nil{
 				necessaryField += "metadata: {tenant}, "
 			}
 		}
-		if necessaryField != "" {
-			return fmt.Errorf("no found necessary network field: '%s'.\n", necessaryField)
+		if necessaryField != ""{
+			return  fmt.Errorf("no found necessary network field: '%s'.\n", necessaryField)
 		}
 		strNetwork := NewStruNetwork(mapYaml)
 		strRe, err := strNetwork.Delete()
@@ -262,19 +261,20 @@ func DeleteNetwork(mapYaml map[string]interface{}, out io.Writer) error {
 	return fmt.Errorf("no found resource kind network")
 }
 
+
 //////////////////////////////// Tenant function
-func CreateTN(mapYaml map[string]interface{}, out io.Writer) error {
-	if kind, found := mapYaml["kind"]; found && kind == "tenant" {
-		_, fMetadata := mapYaml["metadata"]
+func CreateTN(mapYaml map[string]interface{}, out io.Writer) error{
+	if kind, found := mapYaml["kind"]; found && kind == "tenant"{
+		metadata, fMetadata := mapYaml["metadata"]
 
 		necessaryField := ""
-		if !fMetadata {
+		if !fMetadata || metadata == nil{
 			necessaryField += "metadata: {name}"
 			return fmt.Errorf("no found necessary field: '%s'.\n", necessaryField)
 		}
 
 		strTN := NewStruTenant(mapYaml)
-		strRe, err := strTN.Post()
+		strRe , err := strTN.Post()
 		ExcInfo(strRe, out)
 		return err
 	}
@@ -308,7 +308,7 @@ func DeleteTNFromFiled(tenant string, out io.Writer) error {
 	return err
 }
 
-func PutTN(name string, quota string, out io.Writer) error {
+func PutTN(name string, quota string, out io.Writer) error{
 	mapMeta := make(map[string]interface{})
 	mapMeta["name"] = name
 
@@ -326,13 +326,18 @@ func PutTN(name string, quota string, out io.Writer) error {
 }
 
 func DeleteTN(mapYaml map[string]interface{}, out io.Writer) error {
-	if kind, found := mapYaml["kind"]; found && kind == "tenant" {
+	if kind, found := mapYaml["kind"]; found && kind == "tenant"{
 
-		_, fName := mapYaml["metadata"].(map[string]interface{})["name"]
+		if metadata, fMeta := mapYaml["metadata"]; !fMeta || metadata == nil{
+			necessary := "metadata: {name}"
+			return  fmt.Errorf("no found necessary tenant field: '%s'.\n", necessary)
+		}
 
-		necessaryField := ""
-		if !fName {
-			return fmt.Errorf("no found necessary tenant field: '%s'.\n", necessaryField)
+		name, fName := mapYaml["metadata"].(map[string]interface{})["name"]
+
+		necessaryField := "name"
+		if !fName || name == nil{
+			return  fmt.Errorf("no found necessary tenant field: '%s'.\n", necessaryField)
 		}
 		strTN := NewStruTenant(mapYaml)
 		strRe, err := strTN.Delete()
@@ -342,21 +347,20 @@ func DeleteTN(mapYaml map[string]interface{}, out io.Writer) error {
 
 	return fmt.Errorf("no found resource kind network")
 }
-
 //////////////////////////////////ipgroup
 func CreateIPG(mapYaml map[string]interface{}, out io.Writer) error {
-	if kind, found := mapYaml["kind"]; found && kind == "ipgroup" {
+	if kind, found := mapYaml["kind"]; found && kind == "ipgroup"{
 		metadata, fMetadata := mapYaml["metadata"]
 		spec, fSpec := mapYaml["spec"]
 
 		necessaryField := ""
-		if !fSpec {
-			necessaryField += "spec: {ips}, "
+		if !fSpec || spec == nil {
+			necessaryField += "spec: {ips or size}, "
 		}
-		if !fMetadata {
+		if !fMetadata || metadata == nil{
 			necessaryField += "metadata: {name}, metadata: {tenant}, spec: {network}, "
 		}
-		if fMetadata {
+		if fMetadata && metadata != nil {
 			_, fName := metadata.(map[string]interface{})["name"]
 			_, fTenant := (metadata.(map[string]interface{}))["tenant"]
 			_, fNw := (metadata.(map[string]interface{}))["network"]
@@ -366,19 +370,20 @@ func CreateIPG(mapYaml map[string]interface{}, out io.Writer) error {
 			if !fTenant {
 				necessaryField += "metadata: {tenant}, "
 			}
-			if !fNw {
+			if !fNw{
 				necessaryField += "metadata: {network}, "
 			}
 		}
-		if fSpec {
+		if fSpec && spec != nil {
 			_, fIps := (spec.(map[string]interface{}))["ips"]
-			if !fIps {
-				necessaryField += "spec: {ips}, "
+			_, fSize := (spec.(map[string]interface{}))["size"]
+			if !fIps && !fSize {
+				necessaryField += "spec: {ips or size}, "
 			}
 		}
-		if necessaryField != "" {
+		if necessaryField != ""{
 			necessaryField = strings.TrimRight(necessaryField, ", ")
-			return fmt.Errorf("no found necessary field '%s'.\n", necessaryField)
+			return  fmt.Errorf("no found necessary field '%s'.\n", necessaryField)
 		}
 
 		strIPG := NewStruIpgroup(mapYaml)
@@ -404,7 +409,7 @@ func GetIPG(tenant string, nameOrId string, ouputKind string, out io.Writer) err
 	return err
 }
 
-func PutIPG(name string, tenant string, ips string, nwid string, size float64, out io.Writer) error {
+func PutIPG(name string, tenant string, ips string, nwid string, size string, out io.Writer) error{
 	//check necessary field by options.
 	mapPut := make(map[string]interface{})
 
@@ -443,35 +448,34 @@ func DeleteIPG(tenant string, nameOrId string, out io.Writer) error {
 }
 
 func DeleteIPGFromMap(mapYaml map[string]interface{}, out io.Writer) error {
-	if kind, found := mapYaml["kind"]; found && kind == "ipgroup" {
+	if kind, found := mapYaml["kind"]; found && kind == "ipgroup"{
 
 		metadata, fMetadata := mapYaml["metadata"]
 
 		necessaryField := ""
-		if !fMetadata {
+		if !fMetadata || metadata == nil{
 			necessaryField += "metadata: {tenant}, metadata: {name}, "
-		} else {
-			_, fName := metadata.(map[string]interface{})["name"]
-			_, fTenant := metadata.(map[string]interface{})["tenant"]
-			if !fName {
+		}else {
+			name, fName := metadata.(map[string]interface{})["name"]
+			tenant, fTenant := metadata.(map[string]interface{})["tenant"]
+			if !fName || name ==nil{
 				necessaryField += "metadata: {name}, "
 			}
-			if !fTenant {
+			if !fTenant || tenant == nil{
 				necessaryField += "metadata: {tenant}, "
 			}
 		}
-		if necessaryField != "" {
-			return fmt.Errorf("no found necessary ipgroup field: '%s'.\n", necessaryField)
+		if necessaryField != ""{
+			return  fmt.Errorf("no found necessary ipgroup field: '%s'.\n", necessaryField)
 		}
 		struIpg := NewStruIpgroup(mapYaml)
 		strRe, err := struIpg.Delete()
 		ExcInfo(strRe, out)
-		return err
+		return  err
 	}
 
 	return fmt.Errorf("no found resource kind ipgroup")
 }
-
 //////////////////////pod
 func GetPod(tenant string, nameOrId string, out io.Writer) error {
 	mapMetaData := make(map[string]interface{})

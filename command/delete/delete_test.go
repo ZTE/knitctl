@@ -2,9 +2,9 @@ package delete
 
 import (
 	"bytes"
-	"knitter.io/knitter/command/create"
-	"strings"
 	"testing"
+	"strings"
+	"github.com/ZTE/knitctl/command/create"
 	"time"
 )
 
@@ -15,7 +15,7 @@ func TestDeleteByFile_success(t *testing.T) {
 	cmdCreate.Flags().Set("filename", "../../test/test-delete.yaml")
 	cmdCreate.Run(cmdCreate, []string{})
 
-	time.Sleep(time.Second * 5)
+	time.Sleep(time.Second *5)
 
 	buf := bytes.NewBuffer([]byte{})
 	cmd := NewCmdDelete(buf, buf)
@@ -33,6 +33,7 @@ func TestDeleteByFile_success(t *testing.T) {
 	}
 
 }
+
 
 func TestDeleteByFile_failure(t *testing.T) {
 
@@ -57,7 +58,7 @@ func TestDeleteByFile_failure(t *testing.T) {
 	cmd.Run(cmd, []string{})
 	cmdResult = buf.String()
 	expectRe := "no such file or directory: a.yaml"
-	if !strings.Contains(cmdResult, expectRe) {
+	if !strings.Contains(cmdResult, expectRe){
 		t.Errorf("expect result: %s, but got: %s", expectRe, cmdResult)
 	}
 

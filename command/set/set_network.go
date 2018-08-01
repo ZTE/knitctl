@@ -1,10 +1,10 @@
 package set
 
 import (
-	"github.com/ZTE/knitctl/api"
-	"github.com/ZTE/knitctl/command/common"
 	"github.com/spf13/cobra"
 	"io"
+	"github.com/ZTE/knitctl/api"
+	"github.com/ZTE/knitctl/command/common"
 )
 
 var (
@@ -16,12 +16,12 @@ var (
 
 func NewCmdSetNw(out io.Writer, errOut io.Writer) *cobra.Command {
 	options := &common.NetworkOption{
-		CmdOut: out,
-		CmdErr: errOut,
+		CmdOut:out,
+		CmdErr:errOut,
 	}
 
 	cmd := &cobra.Command{
-		Use:     "network [NAME] [flags]",
+		Use: "network [NAME] [flags]",
 		Short:   setNwDes,
 		Long:    setNwDes,
 		Example: setNwExample,
@@ -29,7 +29,7 @@ func NewCmdSetNw(out io.Writer, errOut io.Writer) *cobra.Command {
 			api.ExcuteError(options.RunSetNw(cmd, args), errOut)
 		},
 		SuggestFor: []string{"net", "ntwork", "work"},
-		Aliases:    []string{"nw"},
+		Aliases: []string{"nw"},
 	}
 
 	cmd.Flags().StringVarP(&options.Tenant, "tenant", "t", options.Tenant, "If present, update network in tenant name. ")

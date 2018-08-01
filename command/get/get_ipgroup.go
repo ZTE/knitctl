@@ -1,10 +1,10 @@
 package get
 
 import (
-	"github.com/ZTE/knitctl/api"
-	"github.com/ZTE/knitctl/command/common"
 	"github.com/spf13/cobra"
 	"io"
+	"github.com/ZTE/knitctl/api"
+	"github.com/ZTE/knitctl/command/common"
 )
 
 var (
@@ -21,11 +21,11 @@ var (
 func NewCmdGetIpg(out io.Writer, errOut io.Writer) *cobra.Command {
 	options := &common.IpgroupOption{
 		CmdOut: out,
-		CmdErr: errOut,
+		CmdErr:errOut,
 	}
 
 	cmd := &cobra.Command{
-		Use:     "ipgroup [NAME] [flags]",
+		Use: "ipgroup [NAME] [flags]",
 		Short:   getIpgDes,
 		Long:    getIpgDes,
 		Example: getIpgExample,
@@ -33,7 +33,7 @@ func NewCmdGetIpg(out io.Writer, errOut io.Writer) *cobra.Command {
 			api.ExcuteError(options.RunGetIpg(cmd, args), errOut)
 		},
 		SuggestFor: []string{"ip", "group"},
-		Aliases:    []string{"ipg"},
+		Aliases: []string{"ipg"},
 	}
 
 	cmd.Flags().StringVarP(&options.Tenant, "tenant", "t", options.Tenant, "If present, list ipgroup(s) in tenant name. ")

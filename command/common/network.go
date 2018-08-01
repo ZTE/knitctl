@@ -1,23 +1,23 @@
 package common
 
 import (
-	"fmt"
-	"github.com/ZTE/knitctl/api"
-	"github.com/spf13/cobra"
 	"io"
+	"fmt"
+	"github.com/spf13/cobra"
+	"github.com/ZTE/knitctl/api"
 )
 
 type NetworkOption struct {
 	//post
-	Public  bool
+	Public bool
 	Gateway string
-	Cidr    string
+	Cidr string
 
 	Tenant string
 
 	//set host route
 	Destination string
-	Nexthop     string
+	Nexthop string
 
 	CmdOut io.Writer
 	CmdErr io.Writer
@@ -27,11 +27,11 @@ type NetworkOption struct {
 }
 
 func (o *NetworkOption) RunCreate(cmd *cobra.Command, args []string) error {
-	if api.ContainsElem(args, "options") {
+	if api.ContainsElem(args, "options"){
 		cmd.HelpFunc()(cmd, args)
 		return nil
 	}
-	if len(args) == 0 {
+	if len(args) == 0{
 		return fmt.Errorf("no set network name to create.\n" +
 			"for example: knitctl create network network-name [options].")
 	}
@@ -55,11 +55,11 @@ func (o *NetworkOption) RunCreate(cmd *cobra.Command, args []string) error {
 }
 
 func (o *NetworkOption) RunDelete(cmd *cobra.Command, args []string) error {
-	if api.ContainsElem(args, "options") {
+	if api.ContainsElem(args, "options"){
 		cmd.HelpFunc()(cmd, args)
 		return nil
 	}
-	if len(args) == 0 {
+	if len(args) == 0{
 		return fmt.Errorf("no set network name to delete.\n" +
 			"for example: knitctl delete network network-name [options].")
 	}
@@ -70,10 +70,10 @@ func (o *NetworkOption) RunDelete(cmd *cobra.Command, args []string) error {
 func (options *NetworkOption) RunGetNW(cmd *cobra.Command, args []string) error {
 	if len(args) >= 0 {
 		nameOrId := ""
-		if len(args) == 1 {
+		if len(args) == 1{
 			nameOrId = args[0]
 		}
-		if options.Output != "" && options.Output != "wide" {
+		if options.Output != "" && options.Output != "wide"{
 			return fmt.Errorf("invalid output options value. Supported value: wide.\n" +
 				"for example: knitctl get network --tenant=my-tenant --output=wide.")
 		}

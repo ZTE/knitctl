@@ -1,13 +1,15 @@
 package create
 
 import (
+
 	"io"
 
-	"fmt"
-	"github.com/ZTE/knitctl/api"
 	"github.com/ZTE/knitctl/command/common"
 	"github.com/spf13/cobra"
+	"github.com/ZTE/knitctl/api"
+	"fmt"
 )
+
 
 type CreateOptions struct {
 	//PrintFlags  *PrintFlags
@@ -24,7 +26,7 @@ type CreateOptions struct {
 
 var (
 	createShort = ("Create resource(s) from a file or stdin.")
-	createLong  = (`Create resource(s) from a file.
+	createLong = (`Create resource(s) from a file.
 YAML formats are accepted.`)
 
 	createExample = (`  # Create resource(s) using the data in network.yaml.
@@ -70,16 +72,16 @@ func NewCommandCreate(out io.Writer, errOut io.Writer) *cobra.Command {
 }
 
 func (o *CreateOptions) RunCreate(cmd *cobra.Command, args []string) error {
-	if api.ContainsElem(args, "options") {
+	if api.ContainsElem(args, "options"){
 		cmd.HelpFunc()(cmd, args)
 		return nil
 	}
-	if len(args) == 0 {
+	if len(args) == 0{
 		//it means that create network/tenant based on yaml file(-f a.yaml)
 		fileNames := o.FilenameOptions.Filenames
 		recursive := o.FilenameOptions.Recursive
 		for _, oneFile := range fileNames {
-			if !recursive {
+			if (!recursive) {
 				//it means no -r or --recursive flag
 				return api.CreateResource(oneFile, o.ErrOut, o.Out)
 			} else {
@@ -97,7 +99,7 @@ func (o *CreateOptions) RunCreate(cmd *cobra.Command, args []string) error {
 	}
 
 	if len(args) > 0 {
-		err := fmt.Errorf("invalid argument '%s' to create resource.\n "+
+		err := fmt.Errorf("invalid argument '%s' to create resource.\n " +
 			`Use "knitctl create --help" for more information about a given command.`, args)
 		o.ErrOut.Write([]byte(err.Error()))
 		return err

@@ -1,10 +1,10 @@
 package delete
 
 import (
-	"github.com/ZTE/knitctl/api"
-	"github.com/ZTE/knitctl/command/common"
 	"github.com/spf13/cobra"
+	"github.com/ZTE/knitctl/api"
 	"io"
+	"github.com/ZTE/knitctl/command/common"
 )
 
 var (
@@ -23,14 +23,14 @@ func NewCmdDeleteIPG(cmdOut io.Writer, cmdErr io.Writer) *cobra.Command {
 	cmd := &cobra.Command{
 		Use: "ipgroup [NAME] [flags]",
 		DisableFlagsInUseLine: true,
-		Short:   deleteIPGDes,
-		Long:    deleteIPGDes,
-		Example: deleteIPGExample,
+		Short:                 deleteIPGDes,
+		Long:                  deleteIPGDes,
+		Example:               deleteIPGExample,
 		Run: func(cmd *cobra.Command, args []string) {
 			api.ExcuteError(options.RunDelete(cmd, args), options.CmdOut)
 		},
 		SuggestFor: []string{"ip", "group"},
-		Aliases:    []string{"ipg"},
+		Aliases: []string{"ipg"},
 	}
 	cmd.Flags().StringVarP(&options.Tenant, "tenant", "t", options.Tenant, "If present, set tenant where knitctl delete ipgroup.")
 

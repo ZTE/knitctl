@@ -1,10 +1,10 @@
 package api
 
 import (
-	"encoding/json"
-	"fmt"
-	"net/http"
 	"strings"
+	"net/http"
+	"fmt"
+	"encoding/json"
 )
 
 type struPod struct {
@@ -12,22 +12,22 @@ type struPod struct {
 }
 
 type struPodRe struct {
-	Ips  []struPodIps
+	Ips []struPodIps
 	Name string
 }
 
 type struPodIps struct {
-	Ip_address         string
-	Network_plane      string
+	Ip_address string
+	Network_plane string
 	Network_plane_name string
 }
 
 var (
 	getPodUri = "nw/v1/tenants/{user}/pods/{pod-uuid}"
-	Head_pod  = []string{"IPS", "NAME"}
+	Head_pod = []string{"IPS", "NAME"}
 )
 
-func NewStruPod(mapData map[string]interface{}) *struPod {
+func NewStruPod(mapData map[string]interface{}) *struPod{
 	return &struPod{
 		base: NewBaseInfo(mapData),
 	}
@@ -36,7 +36,7 @@ func NewStruPod(mapData map[string]interface{}) *struPod {
 
 func (p *struPod) Get() (string, error) {
 	hostport, err := GetHostPortFromPerporty()
-	if err != nil {
+	if (err != nil) {
 		return "", err
 	}
 	strTenant := ""
@@ -115,7 +115,7 @@ func getPodResult(result []struPodRe, nameOrId string) []struPodRe {
 		// print all result array
 		return result
 	}
-	for _, pod := range result {
+	for _, pod := range result{
 		if pod.Name == nameOrId {
 			//print this ipgroup
 			return []struPodRe{pod}
@@ -125,17 +125,17 @@ func getPodResult(result []struPodRe, nameOrId string) []struPodRe {
 }
 
 func printPod(result []struPodRe) string {
-	if result == nil || len(result) == 0 {
-		return ("the server doesn't have a resource type.")
+	if result == nil || len(result) == 0{
+		return ("no resource found.")
 
 	}
 	resultArr := [][]string{Head_pod}
-	for _, onePod := range result {
+	for _, onePod := range result{
 		json, _ := json.Marshal(onePod.Ips)
 		oneArr := []string{string(json), onePod.Name}
 		resultArr = append(resultArr, oneArr)
 	}
 	printHead := []int{0, 1}
-	return PrintArray(resultArr, printHead)
+	return  PrintArray(resultArr, printHead)
 
 }

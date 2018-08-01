@@ -1,11 +1,11 @@
 package api
 
 import (
-	"bytes"
-	"encoding/json"
-	"fmt"
-	"net/http"
 	"strings"
+	"net/http"
+	"bytes"
+	"fmt"
+	"encoding/json"
 )
 
 //operator struct
@@ -21,6 +21,7 @@ type struIpgroupSpec struct {
 	Name       string
 	Network_id string
 	Ips        string
+	Size       string
 }
 
 //response struct
@@ -44,7 +45,7 @@ var (
 	putIpgroup    = "nw/v1/tenants/{user}/ipgroups/{ipgroup-uuid}"
 	deleteIpgroup = "nw/v1/tenants/{user}/ipgroups/{ipgroup-uuid}"
 
-	Head_ipg = []string{"NAME", "ID", "IPS", "NETWORK_ID", "SIZE"}
+	Head_ipg = []string{"NAME", "ID", "IPS", "NETWORK", "SIZE"}
 )
 
 func NewStruIpgroup(mapYaml map[string]interface{}) *struIpgroup {
@@ -55,13 +56,14 @@ func NewStruIpgroup(mapYaml map[string]interface{}) *struIpgroup {
 
 func (ipgroup *struIpgroup) Post() (string, error) {
 	hostport, err := GetHostPortFromPerporty()
-	if err != nil {
+	if (err != nil) {
 		return "", err
 	}
 	tenant := ipgroup.base.MetaData["tenant"].(string)
 
 	uri := strings.Replace(postIpgroup, "{user}", tenant, -1)
 	postUrl := hostport + "/" + uri
+
 
 	postJson := ipgroup.getPostPutJson(tenant)
 
@@ -81,7 +83,7 @@ func (ipgroup *struIpgroup) Post() (string, error) {
 
 func (i *struIpgroup) Get(outputKind string) ([]struIpgroupsRe, string, error) {
 	hostport, err := GetHostPortFromPerporty()
-	if err != nil {
+	if (err != nil) {
 		return nil, "", err
 	}
 	strTenant := ""
@@ -108,12 +110,13 @@ func (i *struIpgroup) Get(outputKind string) ([]struIpgroupsRe, string, error) {
 
 	getResult := getIpgroupRe(arrRe, nameOrId)
 
-	return getResult, printIpgroup(getResult, outputKind), nil
+
+	return getResult, printIpgroup(strTenant, getResult, outputKind), nil
 }
 
 func (i *struIpgroup) Put() (string, error) {
 	hostport, err := GetHostPortFromPerporty()
-	if err != nil {
+	if (err != nil) {
 		return "", err
 	}
 	strTenant := ""
@@ -121,6 +124,7 @@ func (i *struIpgroup) Put() (string, error) {
 		strTenant = tenant.(string)
 	}
 	putUri := strings.Replace(getIpgroup, "{user}", strTenant, -1)
+
 
 	getArr, _, _ := i.Get("")
 	if getArr == nil || len(getArr) == 0 {
@@ -146,7 +150,7 @@ func (i *struIpgroup) Put() (string, error) {
 
 func (i *struIpgroup) Delete() (string, error) {
 	hostport, err := GetHostPortFromPerporty()
-	if err != nil {
+	if (err != nil) {
 		return "", err
 	}
 	strTenant := ""
@@ -159,9 +163,10 @@ func (i *struIpgroup) Delete() (string, error) {
 	}
 	tenantUri := strings.Replace(getIpgroup, "{user}", strTenant, -1)
 
+
 	arrGet, _, err := i.Get("")
-	if arrGet == nil || nameOrId == "" {
-		return "", fmt.Errorf("no found ipgroup resource to delete. ")
+	if arrGet == nil || len(arrGet) == 0 || nameOrId == ""{
+		return  "", fmt.Errorf("no found ipgroup resource to delete. ")
 	}
 	strRe := ""
 	for _, oneRe := range arrGet {
@@ -175,16 +180,17 @@ func (i *struIpgroup) Delete() (string, error) {
 		if _, err := executeIpgroupResponse(res, deleteUrl, http.MethodDelete); err != nil {
 			return "", err
 		}
-		strRe += fmt.Sprintf("delete ipgroup name: '%s' in tenant '%s' successfully.\n", oneRe.Name, oneRe.Id, strTenant)
+		strRe += fmt.Sprintf("delete ipgroup name: '%s' in tenant '%s' successfully.\n", oneRe.Name, strTenant)
 	}
 	return strRe, nil
 }
 
-func (ipgroup *struIpgroup) getPostPutJson(tenant string) string {
+func (ipgroup *struIpgroup)getPostPutJson(tenant string) (string) {
 	//get network_id from id or name
 	ipgroupName := ""
 	ipgroupNetworkid := ""
 	ipgroupIps := ""
+	ipgroupSize := ""
 	if name, found := ipgroup.base.MetaData["name"]; found {
 		ipgroupName = name.(string)
 	}
@@ -193,19 +199,32 @@ func (ipgroup *struIpgroup) getPostPutJson(tenant string) string {
 		ipgroupNetworkid = getNetworkIdByTenantAndName(tenant, ipgNw)
 	}
 	if ips, found := ipgroup.base.Spec["ips"]; found {
-		ipgroupIps = "[" + ips.(string) + "]"
+		if ips == ""{
+			ipgroupIps = ""
+		}else {
+			ipgroupIps = "[" + ips.(string) + "]"
+		}
+	}
+	if strSize, found := ipgroup.base.Spec["size"]; found {
+		ipgroupSize = strSize.(string)
+	}
+	//if there is ips, size will not work.
+	if ipgroupIps != ""{
+		ipgroupSize = ""
 	}
 
 	ipgroupSpec := struIpgroupSpec{
 		Name:       ipgroupName,
 		Network_id: ipgroupNetworkid,
 		Ips:        ipgroupIps,
+		Size:       ipgroupSize,
 	}
 	postMode := struPostIpgroup{
 		Ipgroup: ipgroupSpec,
 	}
 
 	arr, _ := json.Marshal(postMode)
+
 	return string(arr)
 }
 
@@ -226,7 +245,7 @@ func executeIpgroupResponse(res *http.Response, requestUrl string, method string
 
 	defer res.Body.Close()
 
-	if strJson == "" {
+	if strJson == ""{
 		return nil, nil
 	}
 
@@ -261,8 +280,8 @@ func getIpgroupRe(result []struIpgroupsRe, nameOrId string) []struIpgroupsRe {
 		// print all result array
 		return result
 	}
-	for _, ipgroup := range result {
-		if ipgroup.Name == nameOrId || ipgroup.Id == nameOrId {
+	for _, ipgroup := range result{
+		if ipgroup.Name == nameOrId || ipgroup.Id == nameOrId{
 			//print this ipgroup
 			return []struIpgroupsRe{ipgroup}
 		}
@@ -270,22 +289,23 @@ func getIpgroupRe(result []struIpgroupsRe, nameOrId string) []struIpgroupsRe {
 	return nil
 
 }
-func printIpgroup(result []struIpgroupsRe, outputKind string) string {
-	if result == nil || len(result) == 0 {
-		return ("the server doesn't have a resource type.")
+func printIpgroup(tenant string, result []struIpgroupsRe, outputKind string) string {
+	if result == nil || len(result) == 0{
+		return ("no resource found.")
 	}
 
 	resultArr := [][]string{Head_ipg}
 
 	//"NAME", "ID", "IPS", "NETWORK_ID", "SIZE"
-	for _, oneIpg := range result {
+	for _, oneIpg := range result{
 		jsonIps, _ := json.Marshal(oneIpg.Ips)
+		networkName, _ := GetNameById(tenant, oneIpg.Network_id)
 		oneArr := []string{oneIpg.Name, oneIpg.Id, string(jsonIps),
-			oneIpg.Network_id, fmt.Sprintf("%d", oneIpg.Size)}
+			networkName, fmt.Sprintf("%d", oneIpg.Size)}
 		resultArr = append(resultArr, oneArr)
 	}
-	printHead := []int{0, 2, 4}
-	if outputKind != "wide" {
+	printHead :=[]int{0, 2, 4}
+	if outputKind != "wide"{
 		return PrintArray(resultArr, printHead)
 	}
 	return PrintArray(resultArr, nil)

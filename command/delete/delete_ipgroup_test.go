@@ -2,9 +2,9 @@ package delete
 
 import (
 	"bytes"
-	"knitter.io/knitter/command/create"
-	"strings"
 	"testing"
+	"github.com/ZTE/knitctl/command/create"
+	"strings"
 	"time"
 )
 
@@ -17,7 +17,7 @@ func TestDeleteipg_success(t *testing.T) {
 	cmdCreateIpg.Flags().Set("network", "lan")
 	cmdCreateIpg.Run(cmdCreateIpg, []string{"delete_cmd_ipgroup_test"})
 
-	time.Sleep(time.Second * 1)
+	time.Sleep(time.Second *1)
 
 	buf := bytes.NewBuffer([]byte{})
 	cmd := NewCmdDeleteIPG(buf, buf)
@@ -34,6 +34,7 @@ func TestDeleteipg_success(t *testing.T) {
 	}
 
 }
+
 
 func TestDeleteipg_failure(t *testing.T) {
 

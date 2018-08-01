@@ -1,23 +1,24 @@
 package api
 
 import (
-	"bytes"
 	"net/http"
+	"bytes"
 )
 
-type BaseObject struct {
-	Kind       string                 //kind(network and tenant supported)
-	Apiversion string                 //version(it seems not used)
-	MetaData   map[string]interface{} //meteData information. ex: name ,tenant and so on
-	Spec       map[string]interface{} //detail information of resource
+type BaseObject struct{
+	Kind string                      //kind(network and tenant supported)
+	Apiversion string                //version(it seems not used)
+	MetaData map[string]interface{}       //meteData information. ex: name ,tenant and so on
+	Spec map[string]interface{}            //detail information of resource
 }
-type ErrResponse struct {
-	ERROR   string
+type ErrResponse struct{
+	ERROR string
 	Message string
-	Code    string
+	Code string
 }
 
-type IRestful interface {
+
+type IRestful interface{
 	Post(postData string) error
 	Get() error
 	Put() error
@@ -27,29 +28,29 @@ type IRestful interface {
 func NewBaseInfo(mapData map[string]interface{}) *BaseObject {
 	kind := Ipgroup
 	version, found1 := mapData["apiversion"]
-	if !found1 {
+	if !found1{
 		version = "v1"
 	}
 	mapMetaData := make(map[string]interface{})
-	if metaData, found := mapData["metadata"]; found {
+	if metaData, found := mapData["metadata"]; found && metaData != nil{
 		mapMetaData = metaData.(map[string]interface{})
 	}
 	mapSpec := make(map[string]interface{})
-	if spec, found := mapData["spec"]; found {
+	if spec, found := mapData["spec"]; found && spec != nil {
 		mapSpec = spec.(map[string]interface{})
 	}
 
 	return &BaseObject{
-		Kind:       kind,
+		Kind: kind,
 		Apiversion: version.(string),
-		MetaData:   mapMetaData,
-		Spec:       mapSpec,
+		MetaData: mapMetaData,
+		Spec: mapSpec,
 	}
 }
 
 func RequestCommon(url string, method string, body []byte) (resp *http.Response, err error) {
 	request, err := http.NewRequest(method, url, bytes.NewReader(body))
-	if err != nil {
+	if (err != nil) {
 		return nil, err
 	}
 
@@ -63,8 +64,8 @@ func PrintArray(resultArr []([]string), headIndex []int) string {
 	}
 	//get max column size
 	columnSize := make([]int, len(resultArr[0]))
-	for _, oneArr := range resultArr {
-		for ix, oneStr := range oneArr {
+	for _, oneArr := range resultArr{
+		for ix, oneStr := range oneArr{
 			if len(oneStr) > columnSize[ix] {
 				columnSize[ix] = len(oneStr)
 			}
@@ -73,8 +74,8 @@ func PrintArray(resultArr []([]string), headIndex []int) string {
 	//headIndex means what columns to print
 	//print string array
 	strRe := ""
-	for _, oneArr := range resultArr {
-		if headIndex != nil && len(headIndex) > 0 {
+	for _, oneArr := range resultArr{
+		if headIndex != nil && len(headIndex) > 0{
 			//print column based on headindex
 			for _, headIx := range headIndex {
 				if headIx < len(oneArr) {
@@ -82,9 +83,9 @@ func PrintArray(resultArr []([]string), headIndex []int) string {
 					strRe += printStr
 				}
 			}
-		} else {
+		}else{
 			//print all column
-			for ix, oneStr := range oneArr {
+			for ix, oneStr := range oneArr{
 				printStr := (oneStr + getStrSpaceOfCount(columnSize[ix]-len(oneStr)) + "    ")
 				strRe += printStr
 			}
@@ -95,10 +96,10 @@ func PrintArray(resultArr []([]string), headIndex []int) string {
 
 }
 
-func getStrSpaceOfCount(count int) string {
+func getStrSpaceOfCount(count int) string{
 	str := ""
-	for ix := 0; ix < count; ix = ix + 1 {
+	for ix := 0; ix < count; ix = ix +1{
 		str += " "
 	}
-	return str
+	return  str
 }

@@ -1,15 +1,15 @@
 package get
 
 import (
-	"fmt"
-	"github.com/ZTE/knitctl/api"
 	"github.com/spf13/cobra"
 	"io"
+	"fmt"
+	"github.com/ZTE/knitctl/api"
 )
 
 var (
 	getShort = ("Display one or many resource.")
-	getLong  = (`Display one or many resource.`)
+	getLong = (`Display one or many resource.`)
 
 	getExample = (`  # List a tenant with name.
   knitctl get tenant my-user
@@ -40,7 +40,7 @@ var (
 func NewCmdGet(out io.Writer, errOut io.Writer) *cobra.Command {
 
 	cmd := &cobra.Command{
-		Use:     "get [(TYPE [NAME])] [flags]",
+		Use: "get [(TYPE [NAME])] [flags]",
 		Short:   getShort,
 		Long:    getLong,
 		Example: getExample,
@@ -62,7 +62,7 @@ func NewCmdGet(out io.Writer, errOut io.Writer) *cobra.Command {
 
 func RunGet(cmd *cobra.Command, args []string) error {
 	if len(args) > 0 {
-		err := fmt.Errorf("invalid argument '%s' to list resource.\n "+
+		err := fmt.Errorf("invalid argument '%s' to list resource.\n " +
 			`Use "knitctl get --help" for more information about a given command.`, args)
 		return err
 	}

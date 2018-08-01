@@ -1,10 +1,10 @@
 package set
 
 import (
-	"fmt"
-	"github.com/ZTE/knitctl/api"
 	"github.com/spf13/cobra"
 	"io"
+	"fmt"
+	"github.com/ZTE/knitctl/api"
 )
 
 var (
@@ -20,7 +20,7 @@ var (
 func NewCmdSet(out io.Writer, errOut io.Writer) *cobra.Command {
 
 	cmd := &cobra.Command{
-		Use:     "set [(TYPE [NAME]) [flags]",
+		Use: "set [(TYPE [NAME]) [flags]",
 		Short:   setDescription,
 		Long:    setDescription,
 		Example: setExample,
@@ -40,9 +40,10 @@ func NewCmdSet(out io.Writer, errOut io.Writer) *cobra.Command {
 
 func RunSet(cmd *cobra.Command, args []string) error {
 	if len(args) > 0 {
-		return fmt.Errorf("invalid argument '%s' to update resource.\n "+
+		return fmt.Errorf("invalid argument '%s' to update resource.\n " +
 			`Use "knitctl set --help" for more information about a given command.`, args)
 	}
 	cmd.HelpFunc()(cmd, args)
 	return nil
 }
+

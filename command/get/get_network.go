@@ -1,10 +1,10 @@
 package get
 
 import (
-	"github.com/ZTE/knitctl/api"
-	"github.com/ZTE/knitctl/command/common"
 	"github.com/spf13/cobra"
 	"io"
+	"github.com/ZTE/knitctl/api"
+	"github.com/ZTE/knitctl/command/common"
 )
 
 var (
@@ -25,7 +25,7 @@ func NewCmdGetNW(out io.Writer, errOut io.Writer) *cobra.Command {
 	}
 
 	cmd := &cobra.Command{
-		Use:     "network [NAME] [flags]",
+		Use: "network [NAME] [flags]",
 		Short:   getNWDes,
 		Long:    getNWDes,
 		Example: getNWExample,
@@ -33,7 +33,7 @@ func NewCmdGetNW(out io.Writer, errOut io.Writer) *cobra.Command {
 			api.ExcuteError(options.RunGetNW(cmd, args), errOut)
 		},
 		SuggestFor: []string{"net", "ntwork", "work"},
-		Aliases:    []string{"nw"},
+		Aliases: []string{"nw"},
 	}
 
 	cmd.Flags().StringVarP(&options.Tenant, "tenant", "t", options.Tenant, "If present, list network(s) in tenant name. ")

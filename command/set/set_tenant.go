@@ -1,10 +1,10 @@
 package set
 
 import (
-	"github.com/ZTE/knitctl/api"
-	"github.com/ZTE/knitctl/command/common"
 	"github.com/spf13/cobra"
 	"io"
+	"github.com/ZTE/knitctl/api"
+	"github.com/ZTE/knitctl/command/common"
 )
 
 var (
@@ -18,12 +18,12 @@ var (
 // retrieves one or more Command from a server.
 func NewCmdSetTN(out io.Writer, errOut io.Writer) *cobra.Command {
 	options := &common.TenantOption{
-		CmdOut: out,
-		CmdErr: errOut,
+		CmdOut:out,
+		CmdErr:errOut,
 	}
 
 	cmd := &cobra.Command{
-		Use:     "tenant [NAME] [flags]",
+		Use: "tenant [NAME] [flags]",
 		Short:   setTNDes,
 		Long:    setTNDes,
 		Example: setTNExample,

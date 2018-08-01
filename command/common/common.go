@@ -1,6 +1,7 @@
 package common
-
-type FileRecusiveOptions struct {
+type FileRecusiveOptions struct{
 	Recursive bool
 	Filenames []string
 }
+
+

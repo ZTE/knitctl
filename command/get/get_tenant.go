@@ -1,10 +1,10 @@
 package get
 
 import (
-	"github.com/ZTE/knitctl/api"
-	"github.com/ZTE/knitctl/command/common"
 	"github.com/spf13/cobra"
 	"io"
+	"github.com/ZTE/knitctl/api"
+	"github.com/ZTE/knitctl/command/common"
 )
 
 var (
@@ -25,7 +25,7 @@ func NewCmdGetTN(out io.Writer, errOut io.Writer) *cobra.Command {
 		CmdErr: errOut,
 	}
 	cmd := &cobra.Command{
-		Use:     "tenant [NAME]",
+		Use: "tenant [NAME]",
 		Short:   getTenantDes,
 		Long:    getTenantDes,
 		Example: getTenantExample,

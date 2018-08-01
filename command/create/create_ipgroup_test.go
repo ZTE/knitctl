@@ -2,9 +2,9 @@ package create
 
 import (
 	"bytes"
-	"knitter.io/knitter/command/delete"
-	"strings"
 	"testing"
+	"strings"
+	"github.com/ZTE/knitctl/command/delete"
 	"time"
 )
 
@@ -24,7 +24,7 @@ func TestCreateipg_success(t *testing.T) {
 		}
 	}
 
-	time.Sleep(time.Second * 1)
+	time.Sleep(time.Second *1)
 
 	cmdDelete := delete.NewCmdDeleteIPG(buf, buf)
 	cmdDelete.Flags().Set("tenant", "default")

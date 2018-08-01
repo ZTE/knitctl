@@ -1,10 +1,10 @@
 package common
 
 import (
-	"fmt"
-	"github.com/ZTE/knitctl/api"
-	"github.com/spf13/cobra"
 	"io"
+	"github.com/spf13/cobra"
+	"github.com/ZTE/knitctl/api"
+	"fmt"
 )
 
 type PodOption struct {
@@ -20,10 +20,10 @@ type PodOption struct {
 func (options *PodOption) RunGetPod(cmd *cobra.Command, args []string) error {
 	if len(args) >= 0 {
 		nameOrId := ""
-		if len(args) == 1 {
+		if len(args) == 1{
 			nameOrId = args[0]
 		}
-		if options.Output != "" && options.Output != "wide" {
+		if options.Output != "" && options.Output != "wide"{
 			return fmt.Errorf("invalid output options value. Supported value: wide.\n" +
 				"for example: knitctl get ipgroup --tenant=my-tenant --output=wide.")
 		}
