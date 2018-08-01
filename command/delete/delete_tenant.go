@@ -1,15 +1,15 @@
 package delete
 
 import (
-	"github.com/ZTE/knitctl/api"
-	"github.com/ZTE/knitctl/command/common"
 	"github.com/spf13/cobra"
 	"io"
+	"github.com/ZTE/knitctl/api"
+	"github.com/ZTE/knitctl/command/common"
 )
 
 var (
 	tenantDeleteShort = ("Delete a tenant with the specified name.")
-	tenantDeleteLong  = (`Delete a tenant with the specified name.`)
+	tenantDeleteLong = (`Delete a tenant with the specified name.`)
 
 	tenantDeleteExample = (`  # Delete a tenant named my-tenant
   knitctl delete tenant my-tenant`)

@@ -1,38 +1,39 @@
 package create
 
 import (
-	"github.com/ZTE/knitctl/api"
-	"github.com/ZTE/knitctl/command/common"
 	"github.com/spf13/cobra"
 	"io"
+	"github.com/ZTE/knitctl/api"
+	"github.com/ZTE/knitctl/command/common"
 )
 
 var (
 	NWShort = ("Create a network in tenant with the specified name, gateway, cidr and public.")
-	NWLong  = (`Create a network in tenant with the specified name, gateway, cidr and public.`)
+	NWLong = (`Create a network in tenant with the specified name, gateway, cidr and public.`)
 
 	NWExample = (`  # Create a new network named my-network in tenant named my-user
   knitctl create network my-network --public=false --gateway=10.10.10.1 --cidr=10.10.10.0/24 --tenant=my-user`)
 )
 
+
 // NewCmdCreateNW is a macro command to create a new network
 func NewCmdCreateNW(cmdOut io.Writer, errOut io.Writer) *cobra.Command {
 	options := &common.NetworkOption{
 		CmdOut: cmdOut,
-		CmdErr: errOut,
+		CmdErr:errOut,
 	}
 
 	cmd := &cobra.Command{
 		Use: "network [NAME] [flags]",
 		DisableFlagsInUseLine: true,
-		Short:   NWShort,
-		Long:    NWLong,
-		Example: NWExample,
+		Short:                 NWShort,
+		Long:                  NWLong,
+		Example:               NWExample,
 		Run: func(cmd *cobra.Command, args []string) {
 			api.ExcuteError(options.RunCreate(cmd, args), options.CmdErr)
 		},
 		SuggestFor: []string{"net", "ntwork", "work"},
-		Aliases:    []string{"nw"},
+		Aliases: []string{"nw"},
 	}
 	cmd.Flags().BoolVarP(&options.Public, "public", "p", options.Public, `If present, set a public/private network to create, default false.`)
 	cmd.Flags().StringVarP(&options.Gateway, "gateway", "g", options.Gateway, `If present, set gateway of creating network.`)
@@ -47,3 +48,4 @@ func NewCmdCreateNW(cmdOut io.Writer, errOut io.Writer) *cobra.Command {
 
 	return cmd
 }
+

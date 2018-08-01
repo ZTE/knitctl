@@ -2,32 +2,32 @@ package api
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"net/http"
+	"encoding/json"
 	"strings"
 )
 
-type struTenant struct {
-	BaseInfo *BaseObject //base information
+type struTenant struct{
+	BaseInfo *BaseObject          //base information
 
 }
 
-type struTenantRe struct {
-	Name        string
-	Id          string
-	Net_number  int
-	Created_at  string
-	Quotas      map[string]interface{}
-	Status      string
+type struTenantRe struct{
+	Name string
+	Id string
+	Net_number int
+	Created_at string
+	Quotas map[string]interface{}
+	Status string
 	Iaas_tenant map[string]interface{}
 }
 
-var (
-	pTenantUri   = "nw/v1/tenants/{tenant-name}"
-	gTenantUri   = "nw/v1/tenants/{tenant-name}"
+var(
+	pTenantUri = "nw/v1/tenants/{tenant-name}"
+	gTenantUri = "nw/v1/tenants/{tenant-name}"
 	putTenantUri = "nw/v1/tenants/{tenant-name}/quota?value="
-	dTenantUri   = "nw/v1/tenants/{tenant-name}"
+	dTenantUri = "nw/v1/tenants/{tenant-name}"
 )
 
 var (
@@ -35,39 +35,41 @@ var (
 )
 
 //construct strutenant structure
-func NewStruTenant(mapData map[string]interface{}) *struTenant {
+func NewStruTenant(mapData map[string]interface{}) *struTenant{
 	kind := "tenant"
 	version, found1 := mapData["apiversion"]
-	if !found1 {
+	if !found1{
 		version = "v1"
 	}
 
 	metaData := mapData["metadata"]
 	mapMetaData := make(map[string]interface{})
-	if metaData != nil {
+	if metaData != nil{
 		mapMetaData = metaData.(map[string]interface{})
 	}
 	spec := mapData["spec"]
 	mapSpec := make(map[string]interface{})
-	if spec != nil {
+	if spec != nil{
 		mapSpec = spec.(map[string]interface{})
 	}
 
 	baseInfo := BaseObject{
-		Kind:       kind,
+		Kind: kind,
 		Apiversion: version.(string),
-		MetaData:   mapMetaData,
-		Spec:       mapSpec,
+		MetaData: mapMetaData,
+		Spec: mapSpec,
 	}
+
 
 	return &struTenant{
 		BaseInfo: &baseInfo,
+
 	}
 }
 
 func (t *struTenant) Post() (string, error) {
 	hostport, err := GetHostPortFromPerporty()
-	if err != nil {
+	if (err != nil) {
 		return "", err
 	}
 	//if count, _ := t.Get(false); (count != nil && len(count) >= 1 && count[0].Status == "ACTIVE") {
@@ -77,12 +79,12 @@ func (t *struTenant) Post() (string, error) {
 	postUrl := hostport + "/" + uri
 	postData := ""
 	res, err := http.Post(postUrl, "application/json", bytes.NewReader([]byte(postData)))
-	if err != nil {
+	if (err != nil) {
 		return "", err
 	}
 
 	_, erro := excuteTenantResponse(res, postUrl, "POST")
-	if erro != nil {
+	if (erro != nil) {
 		return "", erro
 	}
 
@@ -93,7 +95,7 @@ func (t *struTenant) Post() (string, error) {
 
 func (t *struTenant) Get(outputKind string) ([]struTenantRe, string, error) {
 	hostport, err := GetHostPortFromPerporty()
-	if err != nil {
+	if (err != nil) {
 		return nil, "", err
 	}
 	nameOrId := ""
@@ -103,23 +105,24 @@ func (t *struTenant) Get(outputKind string) ([]struTenantRe, string, error) {
 	uri := strings.Replace(gTenantUri, "{tenant-name}", "", -1)
 	getUrl := hostport + "/" + uri
 	response, err := http.Get(getUrl)
-	if err != nil {
+	if (err != nil) {
 		return nil, "", err
 	}
 
 	count, erro := excuteTenantResponse(response, getUrl, "GET")
-	if erro != nil {
+	if (erro != nil) {
 		return count, "", erro
 	}
 
 	getResult := getResultTenant(count, nameOrId)
+
 
 	return getResult, printTenants(getResult, outputKind), nil
 }
 
 func (t *struTenant) Put() (string, error) {
 	hostport, err := GetHostPortFromPerporty()
-	if err != nil {
+	if (err != nil) {
 		return "", err
 	}
 	//put url
@@ -132,12 +135,12 @@ func (t *struTenant) Put() (string, error) {
 
 	response, err := RequestCommon(putUrl, http.MethodPut, []byte(""))
 
-	if err != nil {
+	if (err != nil) {
 		return "", err
 	}
 
 	_, erro := excuteTenantResponse(response, putUrl, http.MethodPut)
-	if erro != nil {
+	if (erro != nil) {
 		return "", erro
 	}
 
@@ -148,7 +151,7 @@ func (t *struTenant) Put() (string, error) {
 
 func (t *struTenant) Delete() (string, error) {
 	hostport, err := GetHostPortFromPerporty()
-	if err != nil {
+	if (err != nil) {
 		return "", err
 	}
 
@@ -166,7 +169,7 @@ func (t *struTenant) Delete() (string, error) {
 	}
 
 	_, erro := excuteTenantResponse(response, deleteUrl, http.MethodDelete)
-	if erro != nil {
+	if (erro != nil) {
 		return "", erro
 	}
 
@@ -177,7 +180,7 @@ func (t *struTenant) Delete() (string, error) {
 
 func excuteTenantResponse(res *http.Response, requestUrl string, method string) ([]struTenantRe, error) {
 	strJson := GetBodyFromResponse(res.Body)
-	if res.StatusCode > 300 || res.StatusCode < 200 {
+	if res.StatusCode > 300 || res.StatusCode < 200{
 		//response code error
 		errRes := ErrResponse{}
 		err := json.Unmarshal([]byte(strJson), &errRes)
@@ -188,34 +191,34 @@ func excuteTenantResponse(res *http.Response, requestUrl string, method string) 
 		return nil, fmt.Errorf("%s request %s failure. status code: %d. message: %s", method, requestUrl, res.StatusCode, errMessage)
 	}
 
-	if strJson == "" && method == http.MethodGet {
-		return nil, fmt.Errorf("the server doesn't have a resource type.")
+	if strJson == "" && method == http.MethodGet{
+		return nil, fmt.Errorf("no resource found.")
 	}
 
-	if method != http.MethodGet {
+	if method != http.MethodGet{
 		//no getting method, no printing result
-		return nil, nil
+		return  nil, nil
 	}
 
 	mapFind := make(map[string]interface{})
 	erro := json.Unmarshal([]byte(strJson), &mapFind)
-	if erro != nil {
+	if erro != nil{
 		return nil, erro
 	}
 
 	defer res.Body.Close()
 
 	arrTenantRe := []struTenantRe{}
-	if _, found := mapFind["tenant"]; found {
+	if _, found := mapFind["tenant"]; found{
 		//it means that only one result
 		mapResult := make(map[string]struTenantRe)
 		err := json.Unmarshal([]byte(strJson), &mapResult)
 		if err == nil {
 			arrTenantRe = []struTenantRe{mapResult["tenant"]}
-		} else {
+		}else {
 			mapResults := make(map[string][]struTenantRe)
 			err := json.Unmarshal([]byte(strJson), &mapResults)
-			if err != nil {
+			if err != nil{
 				return nil, err
 			}
 			arrTenantRe = mapResults["tenant"]
@@ -227,14 +230,15 @@ func excuteTenantResponse(res *http.Response, requestUrl string, method string) 
 
 }
 
+
 func printTenants(result []struTenantRe, outputKind string) string {
-	if result == nil || len(result) <= 0 {
-		return ("the server doesn't have a resource type.")
+	if(result == nil || len(result) <= 0){
+		return ("no resource found.")
 
 	}
 	arrResult := [][]string{Head_tenant}
 	//"NAME", "ID", "NET_NUMBER", "CREATED_AT", "STATUS", "QUOTA", "IAAS_TENANT"
-	for _, oneRe := range result {
+	for _, oneRe := range result{
 		strNumber := fmt.Sprintf("%d", oneRe.Net_number)
 		strQuota, _ := json.Marshal(oneRe.Quotas)
 		//strIaaSTenant, _ := json.Marshal(oneRe.Iaas_tenant)
@@ -245,15 +249,15 @@ func printTenants(result []struTenantRe, outputKind string) string {
 	//only print result NAME(column 0), ID(column 1), NET_NUMBER(column 2), CREATED_AT(column 3), STATUS(column 4)
 	printHeadIndex := []int{0, 1, 2, 3, 4}
 	if outputKind != "wide" {
-		return PrintArray(arrResult, printHeadIndex)
+		return  PrintArray(arrResult, printHeadIndex)
 	}
-	return PrintArray(arrResult, nil)
+	return  PrintArray(arrResult, nil)
 
 }
 
 func getResultTenant(result []struTenantRe, nameOrId string) []struTenantRe {
 	if result == nil {
-		return nil
+		return  nil
 	}
 	if len(result) == 0 {
 		return result
@@ -262,8 +266,8 @@ func getResultTenant(result []struTenantRe, nameOrId string) []struTenantRe {
 		// print all result array
 		return result
 	}
-	for _, t := range result {
-		if t.Name == nameOrId || t.Id == nameOrId {
+	for _, t := range result{
+		if t.Name == nameOrId || t.Id == nameOrId{
 			//print this ipgroup
 			return []struTenantRe{t}
 		}

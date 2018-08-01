@@ -1,10 +1,10 @@
 package version
 
 import (
-	"fmt"
-	"github.com/ZTE/knitctl/api"
 	"github.com/spf13/cobra"
 	"io"
+	"github.com/ZTE/knitctl/api"
+	"fmt"
 )
 
 var (
@@ -30,11 +30,11 @@ func NewCommandVersion(out io.Writer, errOut io.Writer) *cobra.Command {
 }
 
 func RunVersion(cmd *cobra.Command, args []string, out io.Writer) error {
-	if api.ContainsElem(args, "options") {
+	if api.ContainsElem(args, "options"){
 		cmd.HelpFunc()(cmd, args)
 		return nil
 	}
-	if len(args) > 0 {
+	if len(args) > 0{
 		return fmt.Errorf("invalid argument to get version.\n " +
 			`Use "knitctl version --help" for more information about a given command.`)
 

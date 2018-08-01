@@ -1,5 +1,4 @@
 package api
-
 /*
 Copyright 2018 The ZTE Authors.
 
@@ -8,8 +7,8 @@ Deal with error.
 
 import (
 	"fmt"
-	"io"
 	"strings"
+	"io"
 )
 
 func ExcInfo(info string, out io.Writer) {
@@ -23,7 +22,7 @@ func ExcInfo(info string, out io.Writer) {
 }
 
 //Excute one error
-func ExcuteError(err error, errOut io.Writer) {
+func ExcuteError(err error, errOut io.Writer){
 	if err == nil {
 		return
 	}
@@ -39,9 +38,9 @@ func ExcuteError(err error, errOut io.Writer) {
 }
 
 //Excute error array
-func ExcuteErrorArr(errs []error, errOut io.Writer) {
+func ExcuteErrorArr(errs []error, errOut io.Writer){
 	if len(errs) > 0 {
-		for _, err := range errs {
+		for _, err := range errs{
 			ExcuteError(err, errOut)
 		}
 	}

@@ -1,10 +1,10 @@
 package get
 
 import (
-	"github.com/ZTE/knitctl/api"
-	"github.com/ZTE/knitctl/command/common"
 	"github.com/spf13/cobra"
 	"io"
+	"github.com/ZTE/knitctl/api"
+	"github.com/ZTE/knitctl/command/common"
 )
 
 var (
@@ -20,12 +20,12 @@ var (
 
 func NewCmdGetPod(out io.Writer, errOut io.Writer) *cobra.Command {
 	options := &common.PodOption{
-		CmdErr: errOut,
-		CmdOut: out,
+		CmdErr:errOut,
+		CmdOut:out,
 	}
 
 	cmd := &cobra.Command{
-		Use:     "pod [NAME] [flags]",
+		Use: "pod [NAME] [flags]",
 		Short:   getPoDes,
 		Long:    getPoDes,
 		Example: getPoExample,
@@ -41,3 +41,5 @@ func NewCmdGetPod(out io.Writer, errOut io.Writer) *cobra.Command {
 
 	return cmd
 }
+
+

@@ -1,15 +1,15 @@
 package create
 
 import (
-	"github.com/ZTE/knitctl/api"
-	"github.com/ZTE/knitctl/command/common"
 	"github.com/spf13/cobra"
 	"io"
+	"github.com/ZTE/knitctl/api"
+	"github.com/ZTE/knitctl/command/common"
 )
 
 var (
 	tenantShort = ("Create a tenant with the specified name.")
-	tenantLong  = (`Create a tenant with the specified name.`)
+	tenantLong = (`Create a tenant with the specified name.`)
 
 	tenantExample = (`  # Create a new tenant named my-tenant
   knitctl create tenant my-tenant`)
@@ -19,15 +19,15 @@ var (
 func NewCmdCreateTenant(cmdOut io.Writer, errOut io.Writer) *cobra.Command {
 	options := &common.TenantOption{
 		CmdOut: cmdOut,
-		CmdErr: errOut,
+		CmdErr:errOut,
 	}
 
 	cmd := &cobra.Command{
 		Use: "tenant [NAME]",
 		DisableFlagsInUseLine: true,
-		Short:   tenantShort,
-		Long:    tenantLong,
-		Example: tenantExample,
+		Short:                 tenantShort,
+		Long:                  tenantLong,
+		Example:               tenantExample,
 		Run: func(cmd *cobra.Command, args []string) {
 			api.ExcuteError(options.RunCreate(cmd, args), options.CmdErr)
 		},

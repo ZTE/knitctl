@@ -2,9 +2,9 @@ package delete
 
 import (
 	"bytes"
-	"knitter.io/knitter/command/create"
-	"strings"
 	"testing"
+	"github.com/ZTE/knitctl/command/create"
+	"strings"
 	"time"
 )
 
@@ -17,7 +17,7 @@ func TestDeletenw_success(t *testing.T) {
 	cmdCreate.Flags().Set("cidr", "100.100.10.0/24")
 	cmdCreate.Run(cmdCreate, []string{"delete_cmd_network_test"})
 
-	time.Sleep(time.Second * 1)
+	time.Sleep(time.Second *1)
 
 	buf := bytes.NewBuffer([]byte{})
 	cmd := NewCmdDeleteNW(buf, buf)
@@ -34,6 +34,7 @@ func TestDeletenw_success(t *testing.T) {
 	}
 
 }
+
 
 func TestDeletenw_failure(t *testing.T) {
 

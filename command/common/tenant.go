@@ -1,10 +1,10 @@
 package common
 
 import (
+	"io"
+	"github.com/spf13/cobra"
 	"fmt"
 	"github.com/ZTE/knitctl/api"
-	"github.com/spf13/cobra"
-	"io"
 )
 
 type TenantOption struct {
@@ -18,11 +18,11 @@ type TenantOption struct {
 }
 
 func (o *TenantOption) RunCreate(cmd *cobra.Command, args []string) error {
-	if api.ContainsElem(args, "options") {
+	if api.ContainsElem(args, "options"){
 		cmd.HelpFunc()(cmd, args)
 		return nil
 	}
-	if len(args) == 0 {
+	if len(args) == 0{
 		return fmt.Errorf("no set tenant name to create.\n" +
 			"for example: knitctl create tenant tenant-name.")
 	}
@@ -39,11 +39,11 @@ func (o *TenantOption) RunCreate(cmd *cobra.Command, args []string) error {
 }
 
 func (o *TenantOption) RunDelete(cmd *cobra.Command, args []string) error {
-	if api.ContainsElem(args, "options") {
+	if api.ContainsElem(args, "options"){
 		cmd.HelpFunc()(cmd, args)
 		return nil
 	}
-	if len(args) == 0 {
+	if len(args) == 0{
 		return fmt.Errorf("no set tenant name to delete.\n" +
 			"for example: knitctl delete tenant tenant-name.")
 	}
@@ -55,10 +55,10 @@ func (o *TenantOption) RunGetTN(cmd *cobra.Command, args []string) error {
 	//invoke api to get result and list it
 	if len(args) >= 0 {
 		nameOrId := ""
-		if len(args) == 1 {
+		if len(args) == 1{
 			nameOrId = args[0]
 		}
-		if o.Output != "" && o.Output != "wide" {
+		if o.Output != "" && o.Output != "wide"{
 			return fmt.Errorf("invalid output options value. Supported value: wide.\n" +
 				"for example: knitctl get ipgroup --tenant=my-tenant --output=wide.")
 		}
@@ -79,3 +79,4 @@ func (options *TenantOption) RunSetTN(cmd *cobra.Command, args []string) error {
 	return fmt.Errorf("no set tenant name to update.\n" +
 		"for example: knitctl set tenant tenant-name [options].")
 }
+

@@ -2,9 +2,9 @@ package create
 
 import (
 	"bytes"
-	"knitter.io/knitter/command/delete"
-	"strings"
 	"testing"
+	"strings"
+	"github.com/ZTE/knitctl/command/delete"
 	"time"
 )
 
@@ -22,7 +22,7 @@ func TestCreateTenant_success(t *testing.T) {
 		}
 	}
 
-	time.Sleep(time.Second * 1)
+	time.Sleep(time.Second *1)
 
 	cmdDelete := delete.NewCmdDeleteTenant(buf, buf)
 	cmdDelete.Run(cmdDelete, []string{"create_cmd_tenant_test"})

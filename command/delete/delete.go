@@ -1,16 +1,15 @@
 package delete
-
 import (
-	"fmt"
-	"github.com/ZTE/knitctl/api"
-	"github.com/ZTE/knitctl/command/common"
 	"github.com/spf13/cobra"
 	"io"
+	"github.com/ZTE/knitctl/api"
+	"github.com/ZTE/knitctl/command/common"
+	"fmt"
 )
 
 var (
 	delete_short = ("Delete command by filenames, command and names.")
-	delete_long  = (`Delete command by filenames, command and names.
+	delete_long = (`Delete command by filenames, command and names.
 YAML format are accepted.
 `)
 
@@ -38,8 +37,8 @@ type DeleteOptions struct {
 
 func NewCmdDelete(out io.Writer, errOut io.Writer) *cobra.Command {
 	options := DeleteOptions{
-		Out:    out,
-		ErrOut: errOut,
+		Out : out,
+		ErrOut : errOut,
 	}
 	cmd := &cobra.Command{
 		Use: "delete [flags])",
@@ -65,24 +64,26 @@ func NewCmdDelete(out io.Writer, errOut io.Writer) *cobra.Command {
 	cmd.AddCommand(NewCmdDeleteTenant(out, errOut))
 	cmd.AddCommand(NewCmdDeleteIPG(out, errOut))
 
+
+
 	//cmdutil.AddIncludeUninitializedFlag(cmd)
 	return cmd
 }
 
 func (o *DeleteOptions) RunDelete(cmd *cobra.Command, args []string) error {
-	if api.ContainsElem(args, "options") {
+	if api.ContainsElem(args, "options"){
 		cmd.HelpFunc()(cmd, args)
 		return nil
 	}
-	if len(args) > 0 {
+	if len(args) > 0{
 		//delete -f aaa.yaml
-		return fmt.Errorf("invalid argument '%s' to delete resource.\n "+
+		return fmt.Errorf("invalid argument '%s' to delete resource.\n " +
 			`Use "knitctl delete --help" for more information about a given command.`, args)
 	}
 	fileNames := o.FilenameOptions.Filenames
 	recursive := o.FilenameOptions.Recursive
 	for _, oneFile := range fileNames {
-		if !recursive {
+		if (!recursive) {
 			//it means no -r or --recursive flag
 			return api.DeleteResource(oneFile, o.ErrOut, o.Out)
 		} else {

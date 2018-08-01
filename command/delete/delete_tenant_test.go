@@ -2,9 +2,9 @@ package delete
 
 import (
 	"bytes"
-	"knitter.io/knitter/command/create"
-	"strings"
 	"testing"
+	"github.com/ZTE/knitctl/command/create"
+	"strings"
 	"time"
 )
 
@@ -14,7 +14,7 @@ func TestDeleteTenant_success(t *testing.T) {
 	cmdCreateTenant := create.NewCmdCreateTenant(bufCreateTenant, bufCreateTenant)
 	cmdCreateTenant.Run(cmdCreateTenant, []string{"delete_cmd_tenant_test"})
 
-	time.Sleep(time.Second * 1)
+	time.Sleep(time.Second *1)
 
 	buf := bytes.NewBuffer([]byte{})
 	cmd := NewCmdDeleteTenant(buf, buf)
@@ -31,6 +31,7 @@ func TestDeleteTenant_success(t *testing.T) {
 	}
 
 }
+
 
 func TestDeleteTenant_failure(t *testing.T) {
 

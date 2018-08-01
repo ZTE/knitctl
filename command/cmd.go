@@ -1,15 +1,15 @@
 package command
 
 import (
+	"io"
 	"github.com/ZTE/knitctl/api"
-	"github.com/ZTE/knitctl/command/config"
+	"github.com/spf13/cobra"
 	"github.com/ZTE/knitctl/command/create"
-	"github.com/ZTE/knitctl/command/delete"
 	"github.com/ZTE/knitctl/command/get"
 	"github.com/ZTE/knitctl/command/set"
+	"github.com/ZTE/knitctl/command/delete"
+	"github.com/ZTE/knitctl/command/config"
 	"github.com/ZTE/knitctl/command/version"
-	"github.com/spf13/cobra"
-	"io"
 )
 
 var (

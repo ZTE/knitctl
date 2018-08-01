@@ -1,19 +1,19 @@
 package config
 
 import (
-	"fmt"
-	"github.com/ZTE/knitctl/api"
 	"github.com/spf13/cobra"
 	"io"
+	"fmt"
+	"github.com/ZTE/knitctl/api"
 	"strings"
 )
 
 type configOptions struct {
-	yamlFile   string
+	yamlFile string
 	knitterurl string
 
-	Out    io.Writer
-	ErrOut io.Writer
+	Out              io.Writer
+	ErrOut           io.Writer
 }
 
 var (
@@ -52,30 +52,31 @@ func NewCommandConfig(out io.Writer, errOut io.Writer) *cobra.Command {
 	return cmd
 }
 
+
 func (o *configOptions) RunConfig(cmd *cobra.Command, args []string) error {
-	if api.ContainsElem(args, "options") {
+	if api.ContainsElem(args, "options"){
 		cmd.HelpFunc()(cmd, args)
 		return nil
 	}
-	if len(args) > 0 {
+	if len(args) > 0{
 		return fmt.Errorf("invalid argument to config knitter server.\n " +
 			`Use "knitctl config --help" for more information about a given command.`)
 	}
 	configFile := o.yamlFile
 	knitterurl := o.knitterurl
-	if configFile == "" && knitterurl == "" {
+	if configFile == "" && knitterurl == ""{
 		return fmt.Errorf("no found options filename or knitterurl.\n" +
 			"run 'knitctl config --filename=xx.yaml or knitctl config --knitterurl=ip:port'")
 	}
 
 	knitterurlValue, err := o.getKnitterurlFromUrl()
-	if err != nil {
+	if err != nil{
 		return err
 	}
 	if knitterurlValue == "" {
 		knitterurlValue, _ = o.getKnitterurlFromOption()
 	}
-	if knitterurlValue == "" {
+	if knitterurlValue == ""{
 		return fmt.Errorf("no found knitterurl from config yaml file or knitterurl option.\n" +
 			"run 'knitctl config --filename=xx.yaml or knitctl config --knitterurl=ip:port' to config knitter server")
 	}
@@ -94,14 +95,14 @@ func (o *configOptions) RunConfig(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func (o *configOptions) getKnitterurlFromUrl() (string, error) {
+func (o *configOptions) getKnitterurlFromUrl() (string, error){
 	configFile := o.yamlFile
 	if configFile != "" {
 		if find, _ := api.FileExists(configFile); !find {
 			return "", fmt.Errorf("no such file or directory: %s", configFile)
-		} else {
+		}else{
 			mapResult, err := api.GetFromYaml(configFile)
-			if err != nil {
+			if err != nil{
 				return "", err
 			}
 			if len(mapResult) > 0 {
@@ -115,6 +116,6 @@ func (o *configOptions) getKnitterurlFromUrl() (string, error) {
 	return "", nil
 }
 
-func (o *configOptions) getKnitterurlFromOption() (string, error) {
+func (o *configOptions) getKnitterurlFromOption() (string, error){
 	return o.knitterurl, nil
 }
