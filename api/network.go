@@ -166,7 +166,7 @@ func (network *struNetwork) Get(outputKind string) ([]struNetworkRe, string, err
 	getUrlAll := hostport + "/" + getUriAll
 	response, err := http.Get(getUrlAll)
 	// get all result
-	arr, erro := ExcuteNWResponse(response, getUriAll, http.MethodGet)
+	arr, erro := ExcuteNWResponse(response, getUrlAll, http.MethodGet)
 	if (erro != nil) {
 		return arr, "", erro
 	}

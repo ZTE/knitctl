@@ -154,12 +154,11 @@ func GetBodyFromResponse(reader io.ReadCloser) string {
 	strRe := "";
 	temp := make([]byte, bodyCache)
 	byteCount, _ := reader.Read(temp)
-	strRe += byteToString(temp, byteCount)
 
-	for ; byteCount == bodyCache; {
-		tempCycle := make([]byte, bodyCache)
-		byteCount, _ = reader.Read(tempCycle)
+	for ; byteCount > 0; {
 		strRe += byteToString(temp, byteCount)
+		temp = make([]byte, bodyCache)
+		byteCount, _ = reader.Read(temp)
 	}
 	strRe = strings.Trim(strRe, "\"")
 	strRe = strings.Trim(strRe, " ")
